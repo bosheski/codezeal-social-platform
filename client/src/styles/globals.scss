@@ -1,0 +1,9 @@
+body {
+  color: $primary-color;
+}
+
+a {
+  color: $primary-color;
+  @include firaMedium();
+  font-size: 14px;
+}

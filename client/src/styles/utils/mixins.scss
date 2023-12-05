@@ -1,0 +1,28 @@
+@mixin firaMedium {
+ font-family: var(--font-fira-mono), sans-serif;
+ font-weight: 500;
+}
+@mixin firaBold {
+ font-family: var(--font-fira-mono), sans-serif;
+ font-weight: 700;
+}
+@mixin firaRegular {
+ font-family: var(--font-fira-mono), sans-serif;
+ font-weight: 400;
+}
+@mixin heeboMedium {
+ font-family: var(--font-heebo), sans-serif;
+ font-weight: 500;
+}
+@mixin heeboBold {
+ font-family: var(--font-heebo), sans-serif;
+ font-weight: 700;
+}
+@mixin heeboSemiBold {
+ font-family: var(--font-heebo), sans-serif;
+ font-weight: 600;
+}
+
+@mixin horizontalLine {
+ border-bottom: $tertiary-color 0.5px solid;
+}

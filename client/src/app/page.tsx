@@ -1,9 +1,10 @@
 import FeedPosts from "../components/FeedPosts"
-import { getCookies } from 'next-client-cookies/server';
-const Feed: React.FC = async () => {
+import styles from "./page.module.scss"
+const Feed: React.FC = () => {
 
   return (
-    <main>
+    <main className={styles.container}>
+
       <FeedPosts />
     </main>
   )

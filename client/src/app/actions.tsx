@@ -3,11 +3,22 @@
 import { cookies } from "next/headers";
 import { Redis } from "@upstash/redis";
 import * as cookieParser from "cookie-parser";
+import { redirect } from 'next/navigation';
+import { revalidatePath } from "next/cache";
+import useAuthStore from "../store/useAuthStore";
+
 const redis = new Redis({
  url: String(process.env.UPSTASH_URL),
  token: String(process.env.UPSTASH_TOKEN),
 })
 export const loginUser = async (data: any) => {
+ const res = await loginUserSubmit(data);
+ if (res) {
+  revalidatePath('/');
+  redirect('/');
+ }
+}
+const loginUserSubmit = async (data: any) => {
  const response = await fetch('http://localhost:3005/auth/login', {
   method: 'POST',
   headers: {
@@ -24,7 +35,7 @@ export const loginUser = async (data: any) => {
  }
 
  const responseData = await response.json();
- console.log("responseData", responseData);
+
  const getCookieValue = (cookieStr: string, key: string) => {
   if (!cookieStr) return null;
   for (const cookie of cookieStr.split(";")) {
@@ -36,7 +47,6 @@ export const loginUser = async (data: any) => {
   return null;
  }
  const setCookieStr: any = response.headers.get("set-cookie");
- console.log('setCookieStr test', setCookieStr);
  const session: any = getCookieValue(setCookieStr, "_session");
  console.log('session  action', session);
  cookies().set({
@@ -50,7 +60,6 @@ export const loginUser = async (data: any) => {
  return responseData;
 }
 
-
 export const getUser = async () => {
  const userCookie = cookies().get("_session");
  const rawSession: any = userCookie?.value;
@@ -61,6 +70,6 @@ export const getUser = async () => {
  const session = await redis.get(`shub:${sessionId}`);
  if (!session) return false;
  const user = (session as any).passport.user;
- console.log('user', user);
+ console.log('user from action', user)
  return user;
 }
