@@ -1,3 +1,4 @@
-# Fullstack Authentication Example with Next.js and NextAuth.js
+# Authentication example with cookies and express-session
 
-This is the starter project for the fullstack tutorial with Next.js and Prisma. You can find the final version of this project in the [`final`](https://github.com/prisma/blogr-nextjs-prisma/tree/final) branch of this repo.
+This example is a boilerplate that shows how to use cookies and express-session to authenticate users in Next.js with the new App Router using Server Actions.
+
