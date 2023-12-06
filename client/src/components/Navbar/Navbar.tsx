@@ -3,19 +3,24 @@ import styles from "./Navbar.module.scss";
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getUser } from "../../app/actions";
+import { getUser, logoutUser } from "../../app/actions";
 import { CodezealLogo } from "../../ui/codezeal-logo";
-import { useUser } from "../../store/AuthProvider";
+import { useUser } from "../../store/ContextProvider";
 
 const Header: React.FC = () => {
   const pathname = usePathname();
   let right = null;
-  const user = useUser((state) => state.user);
-  console.log('user from zustand', user)
+  const user = useUser();
+  const handleLogoutUser = async () => {
+    await logoutUser();
+
+  }
+
   if (user) {
     right = (
       <div className={styles.loginContainer}>
-        {user.email}
+        <div>{user.email}</div>
+        <button onClick={handleLogoutUser}>Logout</button>
       </div>
     )
   } else {

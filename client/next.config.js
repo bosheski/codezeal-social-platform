@@ -8,6 +8,7 @@ const nextConfig = {
   @import "${path.join(__dirname, 'src/styles/utils/variables.scss')}";
   `
  },
+ reactStrictMode: false
 };
 
 module.exports = nextConfig;

@@ -5,7 +5,7 @@ import "../styles/globals.scss";
 import { heebo, firaMono } from "../styles/fonts";
 
 import { getUser } from "./actions";
-import AuthProvider from "../store/AuthProvider";
+import { AuthContextProvider } from "../store/ContextProvider";
 
 export const metadata = {
   title: 'Next.js',
@@ -22,10 +22,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${heebo.variable} ${firaMono.variable}`}>
       <body>
-        <AuthProvider user={user}>
+        <AuthContextProvider user={user}>
           <Navbar />
           {children}
-        </AuthProvider>
+        </AuthContextProvider>
       </body>
 
     </html >

@@ -83,11 +83,13 @@ router.post(
 );
 
 router.get("/logout", (req: Request, res: Response) => {
+  console.log("logout")
   req.logout((err) => {
     if (err) {
       console.error(err);
     }
     req.session.destroy((err) => {
+      console.log('destroyed');
       if (err) {
         console.error(err);
       }

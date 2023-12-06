@@ -4,8 +4,7 @@ import { cookies } from "next/headers";
 import { Redis } from "@upstash/redis";
 import * as cookieParser from "cookie-parser";
 import { redirect } from 'next/navigation';
-import { revalidatePath } from "next/cache";
-import useAuthStore from "../store/useAuthStore";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const redis = new Redis({
  url: String(process.env.UPSTASH_URL),
@@ -13,10 +12,8 @@ const redis = new Redis({
 })
 export const loginUser = async (data: any) => {
  const res = await loginUserSubmit(data);
- if (res) {
-  revalidatePath('/');
-  redirect('/');
- }
+ revalidateTag('user_login');
+ redirect('/');
 }
 const loginUserSubmit = async (data: any) => {
  const response = await fetch('http://localhost:3005/auth/login', {
@@ -26,8 +23,8 @@ const loginUserSubmit = async (data: any) => {
   },
   body: JSON.stringify(data),
   next: {
-   revalidate: 0,
-  }
+   tags: ['user_login'],
+  },
  });
 
  if (!response.ok) {
@@ -73,3 +70,26 @@ export const getUser = async () => {
  console.log('user from action', user)
  return user;
 }
+
+export const logoutUser = async () => {
+ const userCookie = cookies().get("_session");
+ console.log('userCookie', userCookie);
+ const rawSession: any = userCookie?.value;
+ const headers = {
+  'Content-Type': 'application/json',
+  'Cookie': `_session=${rawSession}`
+ }
+ const response = await fetch('http://localhost:3005/auth/logout', {
+  method: 'GET', headers,
+  next: {
+   tags: ['user_logout'],
+  },
+ });
+ if (!response.ok) {
+  throw new Error('Logout failed');
+ }
+ cookies().delete("_session");
+ revalidateTag('user_logout');
+ // redirect('/');
+}
+
