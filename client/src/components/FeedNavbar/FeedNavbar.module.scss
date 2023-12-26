@@ -1,0 +1,38 @@
+.wrapper {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 63px;
+ .left {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  a {
+   color: $primary-lighter;
+   leading-trim: both;
+   text-edge: cap;
+   font-family: Fira Mono;
+   font-size: 14px;
+   font-style: normal;
+   font-weight: 500;
+   line-height: normal;
+   letter-spacing: -1.1px;
+   margin-right: 15px;
+   position: relative;
+  }
+
+  .underline {
+   color: $secondary-color;
+   position: absolute;
+   bottom: -5px;
+   left: 0;
+   right: 0;
+   height: 1px;
+   background: $secondary-color;
+  }
+  a.active {
+   color: $secondary-color !important;
+  }
+ }
+}

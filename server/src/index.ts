@@ -8,6 +8,9 @@ import session from "express-session";
 import passport from "./database/passport";
 import indexRoutes from "./routes/index";
 import authRoutes from "./routes/auth";
+import postRoutes from "./routes/post";
+import categoryRoutes from "./routes/category";
+import heartRoutes from "./routes/heart";
 import https from "https";
 import fs from "fs";
 import mongoSanitize from "express-mongo-sanitize";
@@ -45,6 +48,9 @@ app.use(passport.session());
 
 app.use("/", indexRoutes);
 app.use("/auth", authRoutes);
+app.use('/posts', postRoutes);
+app.use('/categories', categoryRoutes)
+app.use('/heart', heartRoutes);
 
 // const server = https.createServer(
 //   {
@@ -53,9 +59,6 @@ app.use("/auth", authRoutes);
 //   },
 //   app
 // );
-// server.listen(process.env.PORT || 3005, () => {
-//   console.log(`Server started on port ${process.env.PORT || 3005}`);
-// });
 
 app.listen(process.env.PORT || 3005, () => {
   console.log(`Server started on port ${process.env.PORT || 3005}`);

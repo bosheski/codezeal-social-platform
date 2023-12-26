@@ -10,6 +10,10 @@
  font-family: var(--font-fira-mono), sans-serif;
  font-weight: 400;
 }
+@mixin heeboRegular {
+ font-family: var(--font-heebo), sans-serif;
+ font-weight: 400;
+}
 @mixin heeboMedium {
  font-family: var(--font-heebo), sans-serif;
  font-weight: 500;
@@ -24,5 +28,11 @@
 }
 
 @mixin horizontalLine {
- border-bottom: $tertiary-color 0.5px solid;
+ border-bottom: $tertiary-lighter 0.5px solid;
+}
+
+@mixin centerItem {
+ display: flex;
+ justify-content: center;
+ align-items: center;
 }

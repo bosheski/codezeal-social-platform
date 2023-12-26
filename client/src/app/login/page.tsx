@@ -1,4 +1,3 @@
-'use client';
 import { useContext } from "react";
 import Login from "../../components/Auth/Login/Login"
 import { loginUser } from "../actions";

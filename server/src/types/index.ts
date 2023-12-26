@@ -1,10 +1,12 @@
 export { Company } from "./company";
 
 export type User = {
-  _id: string;
+  id: string;
   email: string;
   password: string;
-  name?: string;
+  name: string;
+  bio?: string;
+  image?: string;
   googleId?: string;
   appleId?: string;
   isAdmin?: boolean;

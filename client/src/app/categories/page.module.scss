@@ -1,0 +1,19 @@
+.container {
+ height: 100%;
+ display: flex;
+ flex-direction: row;
+ width: 100%;
+ background: $background-gradient;
+ padding-top: 67px;
+ .feedWrapper {
+  max-width: 1440px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+ }
+ .categoryContainer {
+  max-width: 697px;
+  padding: 30px 20px 10px 20px;
+ }
+}

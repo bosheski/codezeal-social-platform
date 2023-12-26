@@ -10,22 +10,23 @@ const router = express.Router();
 router.get("/me", authUser, (req: Request, res: Response) => {
   const user = req.user as any;
   const safeUser: SafeUser = {
-    _id: user._id,
+    id: user.id,
     email: user.email,
     name: user.name,
+    bio: user.bio,
+    image: user.image,
     googleId: user.googleId,
     appleId: user.appleId,
   };
 
   res.send({ success: true, data: safeUser });
 });
-
-router.post("/signup", async (req, res) => {
-  const { email, password } = req.body;
+router.post('/createAdmin', async (req: Request, res: Response) => {
+  const { email, name, password } = req.body;
   try {
     const existingUser = await prisma.user.findUnique({
       where: {
-        email: email
+        email: email,
       }
     });
     if (existingUser) {
@@ -38,6 +39,43 @@ router.post("/signup", async (req, res) => {
     const newUser = await prisma.user.create({
       data: {
         email: email,
+        name: name,
+        password: hash,
+        role: 'ADMIN'
+      }
+    });
+
+    return res.json({
+      success: true,
+      data: {
+        ...newUser,
+      },
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Registration failed" });
+  }
+})
+router.post("/signup", async (req, res) => {
+  const { email, name, password } = req.body;
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: email,
+      }
+    });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User already exists" });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    const newUser = await prisma.user.create({
+      data: {
+        email: email,
+        name: name,
         password: hash
       }
     });
@@ -71,9 +109,11 @@ router.post(
     const user = req.user as any;
     console.log('user', user)
     const safeUser: SafeUser = {
-      _id: user.id,
+      id: user.id,
       email: user.email,
       name: user.name,
+      bio: user.bio,
+      image: user.image,
       // googleId: user.googleId,
       // appleId: user.appleId,
     };

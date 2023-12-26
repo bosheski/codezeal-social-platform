@@ -1,0 +1,9 @@
+.container {
+ position: relative;
+ display: flex;
+ flex-direction: row;
+ height: calc(100vh - 67px);
+ padding-top: 30px;
+ flex-basis: 23.37%;
+ max-width: 313px;
+}

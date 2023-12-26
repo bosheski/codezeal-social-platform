@@ -4,14 +4,15 @@ import { cookies } from "next/headers";
 import { Redis } from "@upstash/redis";
 import * as cookieParser from "cookie-parser";
 import { redirect } from 'next/navigation';
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
+import { routeName, searchAllParams } from "../components/FeedList/FeedList";
 
 const redis = new Redis({
  url: String(process.env.UPSTASH_URL),
  token: String(process.env.UPSTASH_TOKEN),
 })
 export const loginUser = async (data: any) => {
- const res = await loginUserSubmit(data);
+ await loginUserSubmit(data);
  revalidateTag('user_login');
  redirect('/');
 }
@@ -43,9 +44,9 @@ const loginUserSubmit = async (data: any) => {
   }
   return null;
  }
+
  const setCookieStr: any = response.headers.get("set-cookie");
  const session: any = getCookieValue(setCookieStr, "_session");
- console.log('session  action', session);
  cookies().set({
   name: "_session",
   value: session,
@@ -62,10 +63,10 @@ export const getUser = async () => {
  const rawSession: any = userCookie?.value;
  const decodeRawSession = decodeURIComponent(rawSession);
  console.log('rawSession', rawSession);
- if (!rawSession) return false;
+ if (!rawSession) return [];
  const sessionId = cookieParser.signedCookie(decodeRawSession, String(process.env.REDIS_SECRET) || "secret");
  const session = await redis.get(`shub:${sessionId}`);
- if (!session) return false;
+ if (!session) return [];
  const user = (session as any).passport.user;
  console.log('user from action', user)
  return user;
@@ -86,10 +87,67 @@ export const logoutUser = async () => {
   },
  });
  if (!response.ok) {
-  throw new Error('Logout failed');
+  return [];
  }
  cookies().delete("_session");
  revalidateTag('user_logout');
- // redirect('/');
 }
+
+
+export const fetchData = async (routeName: routeName, searchParams: searchAllParams) => {
+ const userCookie = cookies().get("_session");
+ const rawSession: any = userCookie?.value;
+ const params = new URLSearchParams(searchParams);
+ const headers = {
+  'Content-Type': 'application/json',
+ }
+ try {
+  if (rawSession) {
+   headers['Cookie'] = `_session=${rawSession}`
+  }
+
+  const response = await fetch(`http://localhost:3005/${routeName}?limit=6&${params}`, {
+   method: 'GET', headers,
+   next: {
+    tags: ['posts'],
+   },
+  });
+  if (!response.ok || response.status === 401) {
+   return [];
+  }
+  const responseData = await response.json();
+  revalidateTag('posts');
+  return responseData;
+ } catch (error) {
+  throw new Error('Server might be temporarily down. Please try again later.');
+ }
+}
+
+export const fetchFollowedCategories = async (params: any) => {
+ const userCookie = cookies().get("_session");
+ const rawSession: any = userCookie?.value;
+ const headers = {
+  'Content-Type': 'application/json',
+ }
+ try {
+  if (rawSession) {
+   headers['Cookie'] = `_session=${rawSession}`
+  }
+  const response = await fetch('http://localhost:3005/categories/followed', {
+   method: 'GET', headers,
+   next: {
+    tags: ['categories'],
+   },
+  });
+  if (!response.ok) {
+   return [];
+  }
+  const responseData = await response.json();
+  revalidateTag('categories');
+  return responseData;
+ } catch (error) {
+  throw new Error('Server might be temporarily down. Please try again later.');
+ }
+}
+
 

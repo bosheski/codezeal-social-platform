@@ -14,9 +14,11 @@ const GoogleStrategy = passportGoogle.Strategy;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 passport.serializeUser<any, any>((user: User, done: any) => {
   const safeUser: SafeUser = {
-    _id: user._id,
+    id: user.id,
     email: user.email,
     name: user.name,
+    bio: user.bio,
+    image: user.image,
     googleId: user.googleId,
     appleId: user.appleId,
   };

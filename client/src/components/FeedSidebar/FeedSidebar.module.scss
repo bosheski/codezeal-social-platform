@@ -1,0 +1,91 @@
+.container {
+ left: 0;
+ display: flex;
+ flex-basis: 23.37%;
+ flex-direction: column;
+ height: calc(100vh - 67px);
+ max-width: 311px;
+ .wrapper {
+  position: fixed;
+  border-right: $tertiary-lighter 0.5px solid;
+  height: 100%;
+  padding-right: 20px;
+  padding-top: 30px;
+  width: 313px;
+  max-width: 313px;
+ }
+ .avatarContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @include firaMedium();
+ }
+ .avatarLeft {
+  display: flex;
+  flex-direction: row;
+  margin-right: 47px;
+ }
+ .avatarTextContainer {
+  max-width: 50px;
+ }
+ .avatarText {
+  width: 50px;
+  letter-spacing: -1.4px;
+  line-height: 100%;
+  font-size: 14px;
+  color: $font-dark-gray;
+  margin-left: 10px;
+ }
+ .avatarButton {
+  width: 144px;
+  height: 36px;
+
+  background: transparent;
+  border-radius: 36px;
+  border: 0.5px solid rgba(123, 131, 108, 0.3);
+  color: rgba(187, 185, 185, 0.5);
+  line-height: 100%;
+  @include heeboMedium();
+  font-size: 14px;
+  @include centerItem();
+  cursor: pointer;
+ }
+ .active {
+  border-radius: 36px;
+  background: #282626;
+  width: 144px;
+  height: 36px;
+  border: transparent 0.5px solid;
+  color: #bbb9b9;
+  @include heeboMedium();
+  line-height: 100%;
+  font-size: 14px;
+  @include centerItem();
+  cursor: pointer;
+ }
+ .avatarRight {
+  display: flex;
+  flex-direction: column;
+ }
+ .filterFeedContainer {
+  margin-top: 122px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+ }
+ .activeFilter {
+  @include heeboSemiBold();
+  letter-spacing: 0.3px;
+  line-height: 100%;
+  font-size: 22px;
+  color: $secondary-color;
+  margin-bottom: 7px;
+ }
+ .inactiveFilter {
+  @include heeboMedium();
+  font-size: 20px;
+  line-height: 100%;
+  color: $primary-lighter;
+ }
+}

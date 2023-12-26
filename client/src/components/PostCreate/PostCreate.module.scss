@@ -1,0 +1,18 @@
+.container {
+ width: 100%;
+ height: 34px;
+ border-bottom: $tertiary-lighter 0.5px solid;
+ margin-bottom: 55px;
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ padding-bottom: 5px;
+ @include firaMedium();
+ .createPost {
+  font-size: 18px;
+  color: $font-dark-gray;
+  letter-spacing: -1.6px;
+  line-height: 100%;
+  margin-left: 20px;
+ }
+}

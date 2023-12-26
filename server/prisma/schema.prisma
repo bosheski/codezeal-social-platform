@@ -8,22 +8,58 @@ datasource db {
 }
 
 model Post {
-  id        String  @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
+  id         String    @id @default(cuid())
+  title      String
+  content    String
+  published  Boolean   @default(false)
+  createdAt  DateTime  @default(now()) @map(name: "created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map(name: "updated_at")
+  hearts     User[]    @relation("UserHearts")
+  comments   Comment[]
+  author     User      @relation("UserPosts", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId   String
+  // make category mandatory
+  category   Category  @relation(fields: [categoryId], references: [id])
+  categoryId String
+  media      String?   @map(name: "media_url")
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  body      String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  media     String?  @map(name: "media_url")
+}
+
+model Category {
+  id        String @id @default(cuid())
+  name      String @unique
+  posts     Post[]
+  followers User[] @relation("UserFollowedCategories")
+}
+
+enum Role {
+  ADMIN
+  USER
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now()) @map(name: "created_at")
-  updatedAt DateTime @updatedAt @map(name: "updated_at")
-  posts     Post[]
-
-  @@map(name: "users")
+  id                 String     @id @default(cuid())
+  name               String     @unique
+  email              String     @unique
+  password           String
+  image              String?    @default("https://api.realworld.io/images/smiley-cyrus.jpeg")
+  bio                String?
+  createdAt          DateTime   @default(now()) @map(name: "created_at")
+  updatedAt          DateTime   @updatedAt @map(name: "updated_at")
+  posts              Post[]     @relation("UserPosts")
+  hearts             Post[]     @relation("UserHearts")
+  followedCategories Category[] @relation("UserFollowedCategories")
+  comments           Comment[]
+  role               Role       @default(USER)
 }

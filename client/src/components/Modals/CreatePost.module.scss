@@ -1,0 +1,42 @@
+.container {
+ position: relative;
+ margin: 0 auto;
+ min-height: 374px;
+ width: 717px;
+ border-radius: 9px;
+ border: 0.5px solid rgba(60, 60, 60, 0.2);
+ background: #090909;
+ box-shadow: 4px 4px 12px 3px rgba(187, 185, 185, 0.03);
+ padding: 20px;
+ .avatar {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  img {
+   width: 36px;
+   height: 36px;
+   border-radius: 50%;
+   margin-right: 10px;
+  }
+  p {
+   font-size: 14px;
+   font-weight: 700;
+   line-height: 100%; /* 14px */
+   letter-spacing: 0.28px;
+   @include heeboBold();
+  }
+ }
+ .escape {
+  position: absolute;
+  right: 32px;
+  top: 32px;
+  cursor: pointer;
+
+  svg {
+   transition: all 0.2s ease-in-out;
+   &:hover {
+    filter: brightness(1.5);
+   }
+  }
+ }
+}
