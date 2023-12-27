@@ -7,8 +7,3 @@ a {
   @include firaMedium();
   font-size: 16px;
 }
-.react-select__loading-indicator {
-  & > * {
-    display: none;
-  }
-}
