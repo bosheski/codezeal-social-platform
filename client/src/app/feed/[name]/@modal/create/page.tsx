@@ -13,7 +13,8 @@ async function CreatePostModal({ }: Props) {
  const followedCategories = await fetchFollowedCategories(params);
  const formattedCategories = followedCategories ? followedCategories.map(category => ({
   label: category.name,
-  value: category.name
+  value: category.name,
+  followers: category.followers.length,
  })) : [];
  const groupedOptions = [
   {

@@ -49,6 +49,11 @@ const Option = (props: any) => {
  return (<div>
   <components.Option {...props}>
    {getHighlightedLabel(props.data, props.selectProps.inputValue)}
+   {props.data.followers ? <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <p>Followers: {props.data.followers}</p>
+   </div> : <div>
+    <p>Followers: 0</p>
+   </div>}
   </components.Option>
  </div>
  );
@@ -91,7 +96,6 @@ const customSelectStyles = (props, menuOpen: any) => {
  }
 }
 
-
 export default function (props: any) {
 
  const [menuOpen, setMenuOpen] = React.useState(false);
@@ -102,6 +106,7 @@ export default function (props: any) {
     onMenuOpen={() => {
      setMenuOpen(true);
     }}
+    isLoading={props.isLoading || false}
     onInputChange={props.onInputChange}
     onMenuClose={() => setMenuOpen(false)}
     styles={customSelectStyles(props, menuOpen) as any}
@@ -109,6 +114,7 @@ export default function (props: any) {
      Option: Option,
      Group: Group,
      IndicatorSeparator: () => null,
+     LoadingIndicator: () => null,
      DropdownIndicator: () => null
     }}
    />

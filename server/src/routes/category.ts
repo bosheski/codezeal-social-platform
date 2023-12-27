@@ -17,10 +17,12 @@ router.post('/', authUser, async (req: Request, res: Response, next: NextFunctio
   next(error);
  }
 });
-router.get('/search/:search/:user', async (req: Request, res: Response, next: NextFunction) => {
-
+router.get('/search/:search/', authUser, async (req: Request, res: Response, next: NextFunction) => {
+ console.log('user', req.user)
+ const userData = req.user as SafeUser;
+ const email = userData.email
  try {
-  const categories = await findMatchedCategory(req.params.search, req.params.user);
+  const categories = await findMatchedCategory(req.params.search, email)
   res.json(categories);
  } catch (error) {
   next(error);

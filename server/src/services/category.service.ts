@@ -50,22 +50,29 @@ export const getCategories = async (query: any) => {
 }
 
 export const findMatchedCategory = async (search: string, email: string) => {
+ console.log('user', email);
  const user = await findUserIdByEmail(email);
-
+ // fetch all categories except the ones followed by the user that contain the search string
+ console.log('user', user);
  const categories = await prisma.category.findMany({
+  select: {
+   name: true,
+   followers: {
+    select: {
+     _count: true,
+    }
+   }
+  },
   where: {
    name: {
     contains: search,
     mode: 'insensitive',
    },
-  },
-  // count followers
-  include: {
    followers: {
-    where: {
-     id: user.id
+    none: {
+     id: user.id,
     },
-   }
+   },
   },
   orderBy: {
    followers: {
@@ -78,13 +85,15 @@ export const findMatchedCategory = async (search: string, email: string) => {
 }
 
 export const getFollowedCategories = async (query: any, email: string) => {
- const { limit, offset } = query;
  const user = await findUserIdByEmail(email);
  const categories = await prisma.category.findMany({
-  take: Number(limit) || 8,
-  skip: Number(offset) || 0,
   select: {
    name: true,
+   followers: {
+    select: {
+     _count: true,
+    }
+   }
   },
   where: {
    followers: {

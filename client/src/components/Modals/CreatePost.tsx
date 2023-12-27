@@ -5,6 +5,7 @@ import { EscapeIcon } from '../../ui/escape-icon';
 import SelectCategory from '../helpers/Select';
 import styles from './CreatePost.module.scss'
 import { useDebouncedCallback } from '../../hooks/useDebouncedCallback';
+import Link from 'next/link';
 type Props = {
   groupedOptions: any;
 }
@@ -26,65 +27,50 @@ function CreatePost({ groupedOptions }: Props) {
   const user = useUser();
   const [categoryOptions, setCategoryOptions] = useState<any[]>(groupedOptions);
   const handleDebouncedTerm = useDebouncedCallback((search: string) => {
-    if (!search) return setCategoryOptions(groupedOptions);
+    setIsSearchingCategory(true);
+    if (!search) {
+      setIsSearchingCategory(false);
+      return setCategoryOptions(groupedOptions);
+    }
     searchCharacters(search);
   }, 200);
 
   const searchCharacters = async (search: string) => {
     if (!search) return setCategoryOptions(groupedOptions);
-    const followedCategories = await fetch(`http://localhost:3005/categories/search/${search}/${user?.email}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await followedCategories.json();
+    try {
+      const followedCategories = await fetch(`http://localhost:3005/categories/search/${search}`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        next: {
+          tags: ['search_categories'],
+        },
+      })
+      const data = followedCategories ? await followedCategories.json() : [];
 
-    //groupedOptions already has followed categories limited to 8
+      const formattedCategories = data.map((category: CategoryResult) => ({
+        label: category.name,
+        value: category.name,
+        followers: category.followers.length,
+      }));
 
-    const followedObjects = data.filter(obj => obj.followers.length > 0).map(obj => ({
-      label: obj.name,
-      value: obj.name,
-    }));
-    const otherObjects = data.filter(obj => obj.followers.length === 0).map(obj => ({
-      label: obj.name,
-      value: obj.name,
-    }));
-
-    setCategoryOptions(prevState => {
-      const newState = [...prevState];
-      // target first object
-      const firstObject = newState[0];
-      // add only non existing objects to the array
-      const existingValues = new Set(firstObject.options.map(o => o.value));
-      const updatedObjects = followedObjects.filter(obj => !existingValues.has(obj.value));
-      // add only if there are new objects
-      if (updatedObjects.length > 0) {
-        const updatedSubObject = [...firstObject.options, ...updatedObjects];
-        console.log('updatedSubObject', updatedSubObject)
-
-        newState[0] = {
-          ...firstObject,
-          options: updatedSubObject
-        }
+      if (formattedCategories.length === 0) {
+        setIsSearchingCategory(false);
+        return setCategoryOptions(groupedOptions)
       }
-      // add other objects
-      if (otherObjects.length > 0) {
-        if (newState[1]) {
-          newState[1] = {
-            ...newState[1],
-            options: otherObjects
-          }
-        } else {
-          newState[1] = {
-            label: "Other Categories",
-            options: otherObjects
-          }
-        }
+      const otherCategories = {
+        label: 'Other Categories',
+        options: formattedCategories
       }
-      return newState
-    });
-    setIsSearchingCategory(false);
+      const newOptions = [...groupedOptions, otherCategories];
+      setCategoryOptions(newOptions);
+      setIsSearchingCategory(false);
+    } catch (error) {
+      console.log(error);
+      setIsSearchingCategory(false);
+    }
   }
 
   return (
@@ -93,9 +79,9 @@ function CreatePost({ groupedOptions }: Props) {
         <img src={user ? user.image : 'https://api.realworld.io/images/smiley-cyrus.jpeg'} alt="author image" className={styles.authorImage} />
         <p>{user ? user.name : 'Unknown'}</p>
       </div>
-      <div className={styles.escape}>
+      <Link className={styles.escape} href="/feed/posts">
         <EscapeIcon />
-      </div>
+      </Link>
       <SelectCategory
         options={categoryOptions}
         width={300}
